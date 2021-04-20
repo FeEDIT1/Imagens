@@ -5,7 +5,8 @@ import './App.css'
 import FormControl from 'react-bootstrap/FormControl'
 import Form from 'react-bootstrap/Form'
 import Alert from 'react-bootstrap/Alert'
-
+import Toast from 'react-bootstrap/Toast'
+import Row from 'react-bootstrap/Row'
 
 import { FaSearch } from 'react-icons/fa'
 import { Jumbotron } from 'react-bootstrap'
@@ -15,7 +16,7 @@ function App() {
   const [foto, setFoto] = useState('')
   const [erroFiltro, setErroFiltro] = useState('')
 
-  
+
 
 
   async function obterFoto() {
@@ -23,7 +24,7 @@ function App() {
     const apiFoto = process.env.REACT_APP_APIFOTO // Utilizar a API no .env
     let urlFoto = `https://api.pexels.com/v1/search?query=${filtro}&per_page=100` // url base da API
 
-    await fetch(urlFoto, {    
+    await fetch(urlFoto, {
       headers: {
         Authorization: apiFoto
       }
@@ -33,16 +34,16 @@ function App() {
       .then(data => {
         console.log(data)
         setFoto(data.photos[Math.floor(Math.random() * (data.photos.length + 1))].src.original) // pegar dados da foto 
-     
-  
+
+
       })
       .catch(function (error) {
         console.error(`Erro ao obter imagem: ${error.message}`)
         setErroFiltro(`Erro ao obter imagem: Digite uma palavra chave!`)
-        
-        
-      })  
-      
+
+
+      })
+
 
 
 
@@ -62,34 +63,40 @@ function App() {
           </br>
 
           <div className="container h-100">
-            <div className="row h-100 justify-content-center align-items-center"></div>   
+            <div className="row h-100 justify-content-center align-items-center"></div>
             <div className="barra">
               <Form >
                 <FormControl type="text" value={filtro} size="lg" onChange={event => setFiltro(event.target.value)}
                   placeholder="Qual imagem você procura?..."></FormControl>
               </Form>
-              <br></br> 
+              <br></br>
               <div className="botao">  {/*Botao responsável pela procura da imagem */}
-                <button onClick={() => obterFoto(filtro)}>PESQUISAR <FaSearch /></button>  
+                <button onClick={() => obterFoto(filtro)}>PESQUISAR <FaSearch /></button>
                 <br></br> <br></br>
-              { foto && 
-              <Jumbotron>
-                  <img src={foto} width="1000px"></img> {/* Objeto imagem com a definição da fonte e o tamanho */}
-                  
+                {foto &&
+                  <Jumbotron>
+                    <img src={foto} width="1000px"></img> {/* Objeto imagem com a definição da fonte e o tamanho */}
+
                   </Jumbotron>}
-              {erroFiltro &&
 
-              <Alert variant = "danger" onClose={() => setErroFiltro(null)} delay = "3000">
+                <Row className="justify-content-md-center">
 
-                      <Alert.Heading>Ops!</Alert.Heading>
 
-                      <p>
+                  {erroFiltro &&
+
+
+                    <Toast onClose={() => setErroFiltro(null)} delay={3000} autohide className="bg-danger" >
+
+                      <Toast.Header strong className="mr-auto" >Ops!</Toast.Header>
+
+                      <Toast.Body className="bg-white text-danger">
                         {erroFiltro}
-                      </p>
-              </Alert>
+                      </Toast.Body>
+                    </Toast>
 
-              }
+                  }
 
+                </Row>
 
 
               </div>
