@@ -13,13 +13,9 @@ function App() {
 
   const [filtro, setFiltro] = useState('')
   const [foto, setFoto] = useState('')
-  const [erroFiltro, setErroFiltro] = useState(null)
+  const [erroFiltro, setErroFiltro] = useState('')
 
-  const listaErrosFiltro = [
-
-                          {"codigo":400, "texto":"Por favor, digite uma palavra para buscar!"}
-
-  ]
+  
 
 
   async function obterFoto() {
@@ -37,11 +33,21 @@ function App() {
       .then(data => {
         console.log(data)
         setFoto(data.photos[Math.floor(Math.random() * (data.photos.length + 1))].src.original) // pegar dados da foto 
+     
+  
       })
       .catch(function (error) {
-        setErroFiltro(error.status)
+        console.error(`Erro ao obter imagem: ${error.message}`)
+        setErroFiltro(`Erro ao obter imagem: Digite uma palavra chave!`)
+        
+        
+      })  
+      
 
-      })
+
+
+
+
   }
 
   return (
@@ -66,18 +72,19 @@ function App() {
               <div className="botao">  {/*Botao responsável pela procura da imagem */}
                 <button onClick={() => obterFoto(filtro)}>PESQUISAR <FaSearch /></button>  
                 <br></br> <br></br>
-               <Jumbotron>
+              { foto && 
+              <Jumbotron>
                   <img src={foto} width="1000px"></img> {/* Objeto imagem com a definição da fonte e o tamanho */}
                   
-                  </Jumbotron>
+                  </Jumbotron>}
               {erroFiltro &&
 
-              <Alert variant = "danger" onClose={() => setErroFiltro(null)} dismissible>
+              <Alert variant = "danger" onClose={() => setErroFiltro(null)} delay = "3000">
 
-                      <Alert.Heading>Ops! ocorreu um erro ao obter a sua imagem!</Alert.Heading>
+                      <Alert.Heading>Ops!</Alert.Heading>
 
                       <p>
-                        {listaErrosFiltro[erroFiltro].texto}
+                        {erroFiltro}
                       </p>
               </Alert>
 
